@@ -15,6 +15,9 @@ app.get('/', (_request, response) => {
 
 app.get('/talker', async (req,res)=>{
     const document = await fs.readFile('./talker.json', 'utf-8');
+    if(!document.length){
+      return res.status(200).json([])
+    }
     res.status(200).json(JSON.parse(document))
 })
 
