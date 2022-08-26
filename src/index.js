@@ -1,6 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const fs = require('fs').promises
+const fs = require('fs').promises;
 
 const app = express();
 app.use(bodyParser.json());
@@ -13,13 +13,13 @@ app.get('/', (_request, response) => {
   response.status(HTTP_OK_STATUS).send();
 });
 
-app.get('/talker', async (req,res)=>{
+app.get('/talker', async (req, res) => {
     const document = await fs.readFile('./talker.json', 'utf-8');
-    if(!document.length){
-      return res.status(200).json([])
+    if (!document.length) {
+      return res.status(200).json([]);
     }
-    res.status(200).json(JSON.parse(document))
-})
+    res.status(200).json(JSON.parse(document));
+});
 
 app.listen(PORT, () => {
   console.log('Online');
