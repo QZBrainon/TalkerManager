@@ -17,9 +17,8 @@ app.get('/talker', async (req, res) => {
     const document = await fs.readFile('./src/talker.json', 'utf-8');
     if (document.length === 0) {
       return res.status(200).send([]);
-    } else {
+    } 
       return res.status(200).json(JSON.parse(document));
-    }
 });
 
 app.listen(PORT, () => {
