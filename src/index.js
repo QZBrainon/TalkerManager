@@ -56,7 +56,7 @@ talkValidator, watchedAtValidator, rateValidator, async (req, res) => {
       const newTalker = { id: latestId, ...register };
       parsedDoc.push(newTalker);
       await fs.writeFile('./src/talker.json', JSON.stringify(parsedDoc));
-      return res.status(201).json({ message: newTalker });
+      return res.status(201).json(newTalker);
     } catch (error) {
       console.log(error.message);
       return res.status(400).end();
