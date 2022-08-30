@@ -79,6 +79,17 @@ async (req, res) => {
   return res.status(200).json(updatedUser);
 });
 
+app.delete('/talker/:id', tokenValidator, async (req, res) => {
+  // const { authorization } = req.headers;
+  const { id } = req.params;
+  const doc = await fs.readFile(path, 'utf-8');
+  const users = JSON.parse(doc);
+  const newArray = users.filter((user) => user.id !== Number(id));
+  console.log(newArray);
+  await fs.writeFile(path, JSON.stringify(newArray));
+  return res.status(204).end();
+});
+
 app.listen(PORT, () => {
   console.log('Online');
 });
