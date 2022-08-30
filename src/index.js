@@ -22,8 +22,10 @@ app.get('/', (_request, response) => {
   response.status(HTTP_OK_STATUS).send();
 });
 
+const path = './src/talker.json';
+
 app.get('/talker', async (req, res) => {
-    const document = await fs.readFile('./src/talker.json', 'utf-8');
+    const document = await fs.readFile(path, 'utf-8');
     if (document.length === 0) {
       return res.status(200).send([]);
     } 
@@ -32,7 +34,7 @@ app.get('/talker', async (req, res) => {
 
 app.get('/talker/:id', async (req, res) => {
   const { id } = req.params;
-  const document = await fs.readFile('./src/talker.json', 'utf-8');
+  const document = await fs.readFile(path, 'utf-8');
   const talkerObject = JSON.parse(document);
   const foundTalker = talkerObject.find((talker) => talker.id === Number(id));
   if (foundTalker) {
@@ -49,18 +51,32 @@ app.post('/talker', tokenValidator, nameValidator, ageValidator,
 talkValidator, watchedAtValidator, rateValidator, async (req, res) => {
     try {
       const register = req.body;
-      const document = await fs.readFile('./src/talker.json', 'utf-8');
+      const document = await fs.readFile(path, 'utf-8');
       const parsedDoc = JSON.parse(document);
       const ids = parsedDoc.map((talker) => talker.id);
       const latestId = Math.max(...ids) + 1;
       const newTalker = { id: latestId, ...register };
       parsedDoc.push(newTalker);
-      await fs.writeFile('./src/talker.json', JSON.stringify(parsedDoc));
+      await fs.writeFile(path, JSON.stringify(parsedDoc));
       return res.status(201).json(newTalker);
     } catch (error) {
       console.log(error.message);
       return res.status(400).end();
     }
+});
+
+app.put('/talker/:id', tokenValidator, nameValidator, 
+ageValidator, talkValidator, watchedAtValidator, rateValidator, 
+async (req, res) => {
+  const request = req.body;
+  const { id } = req.params;
+  const doc = await fs.readFile(path, 'utf-8');
+  const parsedDoc = JSON.parse(doc);
+  const updatedArray = parsedDoc.filter((user) => user.id !== Number(id));
+  const updatedUser = { ...request, id: Number(id) };
+  const newArray = [...updatedArray, updatedUser];
+  await fs.writeFile('./src/talker.json', JSON.stringify(newArray));
+  return res.status(200).json(updatedUser);
 });
 
 app.listen(PORT, () => {
