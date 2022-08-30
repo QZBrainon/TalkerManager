@@ -24,6 +24,20 @@ app.get('/', (_request, response) => {
 
 const path = './src/talker.json';
 
+app.get('/talker/search', tokenValidator, async (req, res) => {
+  const { q } = req.query;
+  const doc = await fs.readFile(path, 'utf-8');
+  const users = JSON.parse(doc);
+  if (!q || q === undefined) {
+    return res.status(200).json(users);
+  }
+  const results = users.filter((user) => user.name.includes(q));
+  if (!results) {
+    return res.status(200).send([]);
+  }
+  return res.status(200).json(results);
+});
+
 app.get('/talker', async (req, res) => {
     const document = await fs.readFile(path, 'utf-8');
     if (document.length === 0) {
